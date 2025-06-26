@@ -1,1 +1,34 @@
+<?php
+$host = 'localhost';
+$db   = 'school_management';
+$user = 'root';
+$pass = ''; // XAMPP मा default password खाली हुन्छ
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+];
+$conn = new PDO($dsn, $user, $pass, $options);
+$pdo = $conn; // now both will work
+try {
+    // ✅ Change this from $pdo to $conn
+    $conn = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+function runSql($sql)
+{
+
+    global $pdo;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $data = array();
+    $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $count = $stmt->rowCount();
+    $data = array('count' => $count, 'data' => $row);
+    return $data;
+}
+?>
 
